@@ -1,4 +1,6 @@
-package com.jive.api.deckOfCards.DeckOfCards;
+package com.jive.api;
+
+
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

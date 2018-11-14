@@ -17,6 +17,12 @@ import com.jive.api.deckOfCards.dto.Game;
 import com.jive.api.deckOfCards.dto.Player;
 import com.jive.api.deckOfCards.dto.ResponseMessageDto;
 
+
+/**
+ * @author Ashish.Patel
+ *
+ */
+
 public class DeckOfCardsImpl implements DeckOfCards {
 
 	private static Map<Long, Game> gameMap;
@@ -26,31 +32,6 @@ public class DeckOfCardsImpl implements DeckOfCards {
 
 	static {
 		gameMap = new HashMap<>();
-	}
-
-	public static void main(String args[]) {
-		DeckOfCardsImpl deck = new DeckOfCardsImpl();
-
-		deck.createGame();
-		deck.shuffle(1);
-
-		deck.addPlayer(1);
-		deck.addPlayer(1);
-		deck.addPlayer(1);
-		deck.addPlayer(1);
-		deck.addPlayer(1);
-		deck.addPlayer(1);
-		deck.addPlayer(1);
-		deck.addPlayer(1);
-		deck.addPlayer(1);
-
-		deck.dealCards(1);
-
-		deck.getListofCardsForPlayer(1, 1);
-		deck.getListofPlayer(1);
-		deck.getCountOfLeftCards(1);
-		deck.getCountOfEachCard(1);
-
 	}
 
 	@Override
@@ -423,5 +404,30 @@ public class DeckOfCardsImpl implements DeckOfCards {
 
 		return dto;
 	}
+	
+//	public static void main(String args[]) {
+//		DeckOfCardsImpl deck = new DeckOfCardsImpl();
+//
+//		deck.createGame();
+//		deck.shuffle(1);
+//
+//		deck.addPlayer(1);
+//		deck.addPlayer(1);
+//		deck.addPlayer(1);
+//		deck.addPlayer(1);
+//		deck.addPlayer(1);
+//		deck.addPlayer(1);
+//		deck.addPlayer(1);
+//		deck.addPlayer(1);
+//		deck.addPlayer(1);
+//
+//		deck.dealCards(1);
+//
+//		deck.getListofCardsForPlayer(1, 1);
+//		deck.getListofPlayer(1);
+//		deck.getCountOfLeftCards(1);
+//		deck.getCountOfEachCard(1);
+//
+//	}
 
 }

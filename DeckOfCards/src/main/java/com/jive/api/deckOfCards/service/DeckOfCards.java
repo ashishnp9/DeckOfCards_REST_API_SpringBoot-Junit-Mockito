@@ -2,6 +2,12 @@ package com.jive.api.deckOfCards.service;
 
 import com.jive.api.deckOfCards.dto.ResponseMessageDto;
 
+
+/**
+ * @author Ashish.Patel
+ *
+ */
+
 public interface DeckOfCards {
 
 	public ResponseMessageDto createGame();

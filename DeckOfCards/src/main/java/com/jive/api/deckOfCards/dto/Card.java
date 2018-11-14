@@ -2,6 +2,10 @@ package com.jive.api.deckOfCards.dto;
 
 import java.util.Comparator;
 
+/**
+ * @author Ashish.Patel
+ *
+ */
 public class  Card implements Comparator<Card.Rank>{
     public Suit s;
     public Rank r;
