@@ -19,7 +19,7 @@ import com.jive.api.deckOfCards.service.DeckOfCards;
  */
 
 @RestController
-@RequestMapping("/DeckofCards")
+@RequestMapping("/deckofCards")
 public class DeckOfCardsController {
 
 	@Autowired
@@ -30,7 +30,7 @@ public class DeckOfCardsController {
 		return new ResponseEntity<ResponseMessageDto>(deckOfCards.createGame(), HttpStatus.CREATED);
 	}
 
-	@DeleteMapping("/deleteGame")
+	@DeleteMapping("/deleteGame/{gameId}")
 	public ResponseEntity<ResponseMessageDto> deleteGame(@PathVariable("gameId") final String gameId) {
 
 		ResponseMessageDto dto = deckOfCards.deleteGame(Long.valueOf(gameId));
@@ -42,12 +42,12 @@ public class DeckOfCardsController {
 
 	}
 
-	@PostMapping("/createDeck")
+	@PostMapping("/createDeck/{gameId}")
 	public ResponseEntity<ResponseMessageDto> createDeck(@PathVariable("gameId") final String gameId) {
 		return new ResponseEntity<ResponseMessageDto>(deckOfCards.createDeck(Long.valueOf(gameId)), HttpStatus.CREATED);
 	}
 
-	@PostMapping("/addPlayer")
+	@PostMapping("/addPlayer/{gameId}")
 	public ResponseEntity<ResponseMessageDto> addPlayer(@PathVariable("gameId") final String gameId) {
 		ResponseMessageDto dto = deckOfCards.addPlayer(Long.valueOf(gameId));
 		if (dto.isError()) {
@@ -57,7 +57,7 @@ public class DeckOfCardsController {
 		}
 	}
 
-	@DeleteMapping("/removePlayer")
+	@DeleteMapping("/removePlayer/{gameId}/{playerId}")
 	public ResponseEntity<ResponseMessageDto> removePlayer(@PathVariable("gameId") final String gameId,
 			@PathVariable("playerId") final String playerId) {
 		ResponseMessageDto dto = deckOfCards.removePlayer(Long.valueOf(gameId), Long.valueOf(playerId));
@@ -68,7 +68,7 @@ public class DeckOfCardsController {
 		}
 	}
 
-	@PostMapping("/dealCards")
+	@PostMapping("/dealCards/{gameId}")
 	public ResponseEntity<ResponseMessageDto> dealCards(@PathVariable("gameId") final String gameId) {
 		ResponseMessageDto dto = deckOfCards.dealCards(Long.valueOf(gameId));
 		if (dto.isError()) {
@@ -78,7 +78,7 @@ public class DeckOfCardsController {
 		}
 	}
 
-	@GetMapping("/getListofCardsForPlayer")
+	@GetMapping("/getListofCardsForPlayer/{gameId}/{playerId}")
 	public ResponseEntity<ResponseMessageDto> getListofCardsForPlayer(@PathVariable("gameId") final String gameId,
 			@PathVariable("playerId") final String playerId) {
 		ResponseMessageDto dto = deckOfCards.getListofCardsForPlayer(Long.valueOf(gameId), Long.valueOf(playerId));
@@ -89,7 +89,7 @@ public class DeckOfCardsController {
 		}
 	}
 
-	@GetMapping("/getListofPlayer")
+	@GetMapping("/getListofPlayer/{gameId}")
 	public ResponseEntity<ResponseMessageDto> getListofPlayer(@PathVariable("gameId") final String gameId) {
 		ResponseMessageDto dto = deckOfCards.getListofPlayer(Long.valueOf(gameId));
 		if (dto.isError()) {
@@ -99,7 +99,7 @@ public class DeckOfCardsController {
 		}
 	}
 
-	@GetMapping("/getCountOfLeftCards")
+	@GetMapping("/getCountOfLeftCards/{gameId}")
 	public ResponseEntity<ResponseMessageDto> getCountOfLeftCards(@PathVariable("gameId") final String gameId) {
 		ResponseMessageDto dto = deckOfCards.getCountOfLeftCards(Long.valueOf(gameId));
 		if (dto.isError()) {
@@ -109,7 +109,7 @@ public class DeckOfCardsController {
 		}
 	}
 
-	@GetMapping("/getCountOfEachCard")
+	@GetMapping("/getCountOfEachCard/{gameId}")
 	public ResponseEntity<ResponseMessageDto> getCountOfEachCard(@PathVariable("gameId") final String gameId) {
 		ResponseMessageDto dto = deckOfCards.getCountOfEachCard(Long.valueOf(gameId));
 		if (dto.isError()) {
@@ -119,7 +119,7 @@ public class DeckOfCardsController {
 		}
 	}
 
-	@GetMapping("/shuffle")
+	@GetMapping("/shuffle/{gameId}")
 	public ResponseEntity<ResponseMessageDto> shuffle(@PathVariable("gameId") final String gameId) {
 		ResponseMessageDto dto = deckOfCards.shuffle(Long.valueOf(gameId));
 		if (dto.isError()) {

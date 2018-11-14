@@ -169,29 +169,25 @@ public class DeckOfCardsImpl implements DeckOfCards {
 				System.out.println("cardsPerPlayer ->" + cardsPerPlayer);
 				System.out.println("remainingCards ->" + remainingCards);
 
-				ArrayList<Card> shuffledDeck = new ArrayList<>(cards);
+				ArrayList<Card> cardListTemp = new ArrayList<>(cards);
 
 				for (int player = 0; player < numberOfPlayers; ++player) {
-					// if (player == remainingCards)
-					// {
-					// --cardsPerPlayer; // all remaining cards dealed
-					// }
 
-					List<Card> cardList = shuffledDeck.subList(0, cardsPerPlayer);
+					List<Card> cardList = cardListTemp.subList(0, cardsPerPlayer);
 					playerList.get(player).getCards().addAll(cardList);
 					long count = 0;
 					for (Card card : cardList) {
 						count = count + card.getRank().getPriority();
 					}
 					playerList.get(player).setTotalValue(count);
-					// CardDeck hand = new CardDeck(shuffledDeck.subList(0, cardsPerPlayer));
-					shuffledDeck.removeAll(cardList);
+					
+					cardListTemp.removeAll(cardList);
 				}
 
-				System.out.println("Left Card => " + shuffledDeck);
+				System.out.println("Left Card => " + cardListTemp);
 
 				game.setPlayerList(playerList);
-				game.setLeftCards(shuffledDeck);
+				game.setLeftCards(cardListTemp);
 				gameMap.put(gameId, game);
 
 				System.out.println("Game Map => " + gameMap);
@@ -202,6 +198,8 @@ public class DeckOfCardsImpl implements DeckOfCards {
 
 			} else {
 				dto.setResponseMessage("Players not found or Players are more than 52 count");
+				dto.setResponseCode(HttpStatus.NOT_FOUND.value());
+				dto.setError(true);
 			}
 
 		} else {
