@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 import com.jive.api.deckOfCards.dto.Card;
 import com.jive.api.deckOfCards.dto.Game;
@@ -23,6 +24,7 @@ import com.jive.api.deckOfCards.dto.ResponseMessageDto;
  *
  */
 
+@Service
 public class DeckOfCardsImpl implements DeckOfCards {
 
 	private static Map<Long, Game> gameMap;
