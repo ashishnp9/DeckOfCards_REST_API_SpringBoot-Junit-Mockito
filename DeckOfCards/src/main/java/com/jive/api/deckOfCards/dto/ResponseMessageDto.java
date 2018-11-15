@@ -2,6 +2,8 @@ package com.jive.api.deckOfCards.dto;
 
 
 
+import java.io.Serializable;
+
 import org.springframework.http.HttpHeaders;
 
 import lombok.AllArgsConstructor;
@@ -22,7 +24,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @Builder
 @ToString
-public class ResponseMessageDto {
+public class ResponseMessageDto implements Serializable {
+
+	private static final long serialVersionUID = -6654830719050808718L;
 
 	private int responseCode;
 

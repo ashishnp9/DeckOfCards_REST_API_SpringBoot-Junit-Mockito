@@ -17,7 +17,8 @@ import com.jive.api.deckOfCards.dto.Card;
 import com.jive.api.deckOfCards.dto.Game;
 import com.jive.api.deckOfCards.dto.Player;
 import com.jive.api.deckOfCards.dto.ResponseMessageDto;
-
+import com.jive.api.deckOfCards.utility.constants.Rank;
+import com.jive.api.deckOfCards.utility.constants.Suit;
 
 /**
  * @author Ashish.Patel
@@ -28,12 +29,14 @@ import com.jive.api.deckOfCards.dto.ResponseMessageDto;
 public class DeckOfCardsImpl implements DeckOfCards {
 
 	private static Map<Long, Game> gameMap;
+	private static Map<Long, List<String>> playerMap;
 	private static AtomicLong gameIdCounter = new AtomicLong();
 	private static AtomicLong playerIdCounter = new AtomicLong();
 	private static AtomicLong deckIdCounter = new AtomicLong();
 
 	static {
 		gameMap = new HashMap<>();
+		playerMap = new HashMap<>();
 	}
 
 	@Override
@@ -42,18 +45,17 @@ public class DeckOfCardsImpl implements DeckOfCards {
 		long gameId = gameIdCounter.getAndIncrement() + 1;
 
 		List<Card> cards = new ArrayList<>();
-
-		for (Card.Suit s : Card.Suit.values()) {
-			for (Card.Rank r : Card.Rank.values()) {
-				cards.add(new Card(r, s));
+		for (Suit s : Suit.values()) {
+			for (Rank r : Rank.values()) {
+				cards.add(new Card(s, r));
 			}
 		}
 
+		// System.out.println("Create game size => " + cards.size());
 		gameMap.put(gameId, new Game(gameId, cards, new ArrayList<Card>(), new ArrayList<Player>(), 0l));
 		dto.setResponseMessage("Your game Has been created Here Is your Game ID : " + gameId);
 		dto.setResponseCode(HttpStatus.CREATED.value());
 		dto.setError(false);
-		// System.out.println("before " + gameMap);
 		return dto;
 
 	}
@@ -157,40 +159,50 @@ public class DeckOfCardsImpl implements DeckOfCards {
 			Game game = gameMap.get(gameId);
 
 			List<Player> playerList = game.getPlayerList();
+
 			List<Card> cards = game.getCards();
+			// System.out.println("Card Size = >" + cards.size());
 
 			if (null != playerList && !playerList.isEmpty() && playerList.size() <= 52) {
 
 				int numberOfPlayers = playerList.size();
 				int cardsPerPlayer = cards.size() / numberOfPlayers;
-				int remainingCards = cards.size() % numberOfPlayers;
+				// int remainingCards = cards.size() % numberOfPlayers;
 
-				System.out.println("numberOfPlayers ->" + numberOfPlayers);
-				System.out.println("cardsPerPlayer ->" + cardsPerPlayer);
-				System.out.println("remainingCards ->" + remainingCards);
+				// System.out.println("numberOfPlayers ->" + numberOfPlayers);
+				// System.out.println("cardsPerPlayer ->" + cardsPerPlayer);
+				// System.out.println("remainingCards ->" + remainingCards);
 
 				ArrayList<Card> cardListTemp = new ArrayList<>(cards);
+				// System.out.println("cardListTemp = >" + cardListTemp.size());
 
+				List<Player> pList = new ArrayList<>();
+				List<String> cardInfolist = null;
 				for (int player = 0; player < numberOfPlayers; ++player) {
-
+					cardInfolist = new ArrayList<String>();
 					List<Card> cardList = cardListTemp.subList(0, cardsPerPlayer);
-					playerList.get(player).getCards().addAll(cardList);
+
+					Player gamePlayer = new Player();
+					gamePlayer.setPlayerId(playerList.get(player).getPlayerId());
+					gamePlayer.setCards(cardList);
+
 					long count = 0;
+					cardInfolist.add("PlayerId :" + playerList.get(player).getPlayerId());
 					for (Card card : cardList) {
-						count = count + card.getRank().getPriority();
+						String cardInfo = "suit :" + card.suit + " " + "rank :" + card.rank;
+
+						cardInfolist.add(cardInfo);
+						count = count + card.rank.getPriority();
 					}
-					playerList.get(player).setTotalValue(count);
-					
+					gamePlayer.setTotalValue(count);
+					pList.add(gamePlayer);
+					playerMap.put(gamePlayer.getPlayerId(), cardInfolist);
 					cardListTemp.removeAll(cardList);
 				}
 
-				System.out.println("Left Card => " + cardListTemp);
-
-				game.setPlayerList(playerList);
+				game.setPlayerList(pList);
 				game.setLeftCards(cardListTemp);
 				gameMap.put(gameId, game);
-
-				System.out.println("Game Map => " + gameMap);
 
 				dto.setResponseMessage("Successfully deal all the Cards");
 				dto.setError(false);
@@ -214,36 +226,21 @@ public class DeckOfCardsImpl implements DeckOfCards {
 	@Override
 	public ResponseMessageDto getListofCardsForPlayer(long gameId, long playerId) {
 		ResponseMessageDto dto = new ResponseMessageDto();
-
-		if (gameMap.containsKey(gameId)) {
-
-			List<Player> playerList = gameMap.get(gameId).getPlayerList();
-			if (null != playerList && !playerList.isEmpty()) {
-				Player player = playerList.stream().filter(p -> new Long(playerId).equals(new Long(p.getPlayerId())))
-						.findAny().orElse(null);
-				if (null != player) {
-					// player.getCards().forEach(System.out::println);
-
-					dto.setResponseObject(player);
-					dto.setResponseMessage("Successfully fetched card for the player");
-					dto.setResponseCode(HttpStatus.OK.value());
-					dto.setError(false);
-
-					System.out.println("getListofCardsForPlayer => " + dto);
-
-				} else {
-					dto.setResponseMessage("Player is not available in Game");
-				}
+		try {
+			if (gameMap.containsKey(gameId) && playerMap.containsKey(playerId)) {
+				dto.setResponseObject(playerMap.get(playerId));
+				dto.setResponseMessage("Successfully fetched card for the player");
+				dto.setResponseCode(HttpStatus.OK.value());
+				dto.setError(false);
 
 			} else {
-				dto.setResponseMessage("Player is not available in Game");
+				dto.setResponseMessage("GameId or PlayerId not found for getListofCardsForPlayer");
+				dto.setResponseCode(HttpStatus.NOT_FOUND.value());
+				dto.setErrorDiscription("Game Id not found ");
+				dto.setError(true);
 			}
-
-		} else {
-			dto.setResponseMessage("Game Id not found for remove Player");
-			dto.setResponseCode(HttpStatus.NOT_FOUND.value());
-			dto.setErrorDiscription("Game Id not found ");
-			dto.setError(true);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		return dto;
@@ -259,16 +256,12 @@ public class DeckOfCardsImpl implements DeckOfCards {
 
 				playerList.sort(
 						(Player p1, Player p2) -> new Long(p2.getTotalValue()).compareTo(new Long(p1.getTotalValue())));
-				// playerList.sort((Player o1, Player
-				// o2)->o1.getTotalValue()-o2.getTotalValue());
-				playerList.forEach(p -> list.add(p.getPlayerId() + " " + p.getTotalValue()));
+				playerList.forEach(p -> list.add("PlayerId :" + p.getPlayerId() + " TotalCount :" + p.getTotalValue()));
 
 				dto.setResponseMessage("getListofPlayer fetched Successfully.!");
 				dto.setResponseObject(list);
 				dto.setResponseCode(HttpStatus.OK.value());
 				dto.setError(false);
-
-				System.out.println("getListofPlayer => " + dto);
 
 			} else {
 				dto.setResponseMessage("Players are not available in Game");
@@ -291,13 +284,13 @@ public class DeckOfCardsImpl implements DeckOfCards {
 
 			if (null != leftCards && !leftCards.isEmpty()) {
 
-				long SpadeCount = leftCards.stream().filter(card -> "Spade".equals(card.getSuit().toString()))
+				long SpadeCount = leftCards.stream().filter(card -> "Spade".equals(card.suit.toString()))
 						.collect(Collectors.toList()).size();
-				long HeartCount = leftCards.stream().filter(card -> "Heart".equals(card.getSuit().toString()))
+				long HeartCount = leftCards.stream().filter(card -> "Heart".equals(card.suit.toString()))
 						.collect(Collectors.toList()).size();
-				long DiamondCount = leftCards.stream().filter(card -> "Diamond".equals(card.getSuit().toString()))
+				long DiamondCount = leftCards.stream().filter(card -> "Diamond".equals(card.suit.toString()))
 						.collect(Collectors.toList()).size();
-				long ClubsCount = leftCards.stream().filter(card -> "Clubs".equals(card.getSuit().toString()))
+				long ClubsCount = leftCards.stream().filter(card -> "Clubs".equals(card.suit.toString()))
 						.collect(Collectors.toList()).size();
 
 				CardList.add(SpadeCount + " Spade");
@@ -310,7 +303,7 @@ public class DeckOfCardsImpl implements DeckOfCards {
 				dto.setResponseCode(HttpStatus.OK.value());
 				dto.setError(false);
 
-				System.out.println("getCountOfLeftCards => " + dto);
+			//	System.out.println("getCountOfLeftCards => " + dto);
 
 			} else {
 				dto.setResponseMessage("No cards are left in the Game");
@@ -334,16 +327,16 @@ public class DeckOfCardsImpl implements DeckOfCards {
 
 			if (null != leftCards && !leftCards.isEmpty()) {
 
-				List<Card> SpadeList = leftCards.stream().filter(card -> "Spade".equals(card.getSuit().toString()))
+				List<Card> SpadeList = leftCards.stream().filter(card -> "Spade".equals(card.suit.toString()))
 						.collect(Collectors.toList());
-				List<Card> HeartList = leftCards.stream().filter(card -> "Heart".equals(card.getSuit().toString()))
+				List<Card> HeartList = leftCards.stream().filter(card -> "Heart".equals(card.suit.toString()))
 						.collect(Collectors.toList());
-				List<Card> DiamondList = leftCards.stream().filter(card -> "Diamond".equals(card.getSuit().toString()))
+				List<Card> DiamondList = leftCards.stream().filter(card -> "Diamond".equals(card.suit.toString()))
 						.collect(Collectors.toList());
-				List<Card> ClubsList = leftCards.stream().filter(card -> "Clubs".equals(card.getSuit().toString()))
+				List<Card> ClubsList = leftCards.stream().filter(card -> "Clubs".equals(card.suit.toString()))
 						.collect(Collectors.toList());
 
-				Comparator<Card> priorityCoparator = (o1, o2) -> o2.r.getPriority() - (o1.r.getPriority());
+				Comparator<Card> priorityCoparator = (o1, o2) -> o2.rank.getPriority() - (o1.rank.getPriority());
 
 				SpadeList.sort(priorityCoparator);
 				HeartList.sort(priorityCoparator);
@@ -360,7 +353,7 @@ public class DeckOfCardsImpl implements DeckOfCards {
 				dto.setResponseCode(HttpStatus.OK.value());
 				dto.setError(false);
 
-				System.out.println("getCountOfEachCard => " + dto);
+				//System.out.println("getCountOfEachCard => " + dto);
 
 			} else {
 				dto.setResponseMessage("No cards are left in the Game");
@@ -382,12 +375,20 @@ public class DeckOfCardsImpl implements DeckOfCards {
 
 			Game game = gameMap.get(gameId);
 			List<Card> cards = game.getCards();
+			//System.out.println("shuffle1 size => " + cards.size());
 			List<Card> randomList = new ArrayList<>();
 			List<Integer> randomNumber = new ArrayList<>();
-			ThreadLocalRandom.current().ints(0, 51).distinct().limit(51).forEach(n -> randomNumber.add(n));
+			ThreadLocalRandom.current().ints(0, 52).distinct().limit(52).forEach(n -> randomNumber.add(n));
+
+			//System.out.println("random number size => " + randomNumber.size());
+			//System.out.println("random number print => " + randomNumber);
+
 			for (Integer integer : randomNumber) {
 				randomList.add(cards.get(integer));
 			}
+
+			//System.out.println("randomList size => " + randomList.size());
+
 			game.setCards(randomList);
 			gameMap.put(gameId, game);
 			// System.out.println("After "+gameMap);
@@ -404,30 +405,30 @@ public class DeckOfCardsImpl implements DeckOfCards {
 
 		return dto;
 	}
-	
-//	public static void main(String args[]) {
-//		DeckOfCardsImpl deck = new DeckOfCardsImpl();
-//
-//		deck.createGame();
-//		deck.shuffle(1);
-//
-//		deck.addPlayer(1);
-//		deck.addPlayer(1);
-//		deck.addPlayer(1);
-//		deck.addPlayer(1);
-//		deck.addPlayer(1);
-//		deck.addPlayer(1);
-//		deck.addPlayer(1);
-//		deck.addPlayer(1);
-//		deck.addPlayer(1);
-//
-//		deck.dealCards(1);
-//
-//		deck.getListofCardsForPlayer(1, 1);
-//		deck.getListofPlayer(1);
-//		deck.getCountOfLeftCards(1);
-//		deck.getCountOfEachCard(1);
-//
-//	}
+
+	public static void main(String args[]) {
+		DeckOfCardsImpl deck = new DeckOfCardsImpl();
+
+		deck.createGame();
+		deck.shuffle(1);
+
+		deck.addPlayer(1);
+		deck.addPlayer(1);
+		deck.addPlayer(1);
+		deck.addPlayer(1);
+		deck.addPlayer(1);
+		deck.addPlayer(1);
+		deck.addPlayer(1);
+		deck.addPlayer(1);
+		deck.addPlayer(1);
+
+		deck.dealCards(1);
+
+		deck.getListofCardsForPlayer(1, 1);
+		// deck.getListofPlayer(1);
+		// deck.getCountOfLeftCards(1);
+		// deck.getCountOfEachCard(1);
+
+	}
 
 }

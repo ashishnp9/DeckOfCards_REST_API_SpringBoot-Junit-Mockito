@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jive.api.deckOfCards.dto.Game;
 import com.jive.api.deckOfCards.dto.ResponseMessageDto;
 import com.jive.api.deckOfCards.service.DeckOfCards;
 
@@ -42,14 +44,14 @@ public class DeckOfCardsController {
 
 	}
 
-	@PostMapping("/createDeck/{gameId}")
-	public ResponseEntity<ResponseMessageDto> createDeck(@PathVariable("gameId") final String gameId) {
-		return new ResponseEntity<ResponseMessageDto>(deckOfCards.createDeck(Long.valueOf(gameId)), HttpStatus.CREATED);
+	@PostMapping("/createDeck")
+	public ResponseEntity<ResponseMessageDto> createDeck(@RequestBody Game game) {
+		return new ResponseEntity<ResponseMessageDto>(deckOfCards.createDeck(game.getGameId()), HttpStatus.CREATED);
 	}
 
-	@PostMapping("/addPlayer/{gameId}")
-	public ResponseEntity<ResponseMessageDto> addPlayer(@PathVariable("gameId") final String gameId) {
-		ResponseMessageDto dto = deckOfCards.addPlayer(Long.valueOf(gameId));
+	@PostMapping("/addPlayer")
+	public ResponseEntity<ResponseMessageDto> addPlayer(@RequestBody Game game) {
+		ResponseMessageDto dto = deckOfCards.addPlayer(game.getGameId());
 		if (dto.isError()) {
 			return new ResponseEntity<ResponseMessageDto>(dto, HttpStatus.NOT_FOUND);
 		} else {
@@ -68,7 +70,7 @@ public class DeckOfCardsController {
 		}
 	}
 
-	@PostMapping("/dealCards/{gameId}")
+	@GetMapping("/dealCards/{gameId}")
 	public ResponseEntity<ResponseMessageDto> dealCards(@PathVariable("gameId") final String gameId) {
 		ResponseMessageDto dto = deckOfCards.dealCards(Long.valueOf(gameId));
 		if (dto.isError()) {

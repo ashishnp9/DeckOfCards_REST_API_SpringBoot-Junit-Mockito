@@ -1,5 +1,6 @@
 package com.jive.api.deckOfCards.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -19,8 +20,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @Builder
 @ToString
-public class Player {
+public class Player implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public long playerId;
 	private List<Card> cards;
 	public long totalValue;
