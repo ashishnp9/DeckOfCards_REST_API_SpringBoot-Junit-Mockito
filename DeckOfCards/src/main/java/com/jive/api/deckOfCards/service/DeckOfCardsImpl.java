@@ -43,7 +43,6 @@ public class DeckOfCardsImpl implements DeckOfCards {
 	public ResponseMessageDto createGame() {
 		ResponseMessageDto dto = new ResponseMessageDto();
 		long gameId = gameIdCounter.getAndIncrement() + 1;
-		System.out.println(gameId);
 		List<Card> cards = new ArrayList<>();
 		for (Suit s : Suit.values()) {
 			for (Rank r : Rank.values()) {
@@ -83,9 +82,7 @@ public class DeckOfCardsImpl implements DeckOfCards {
 
 	@Override
 	public ResponseMessageDto createDeck(long gameId) {
-		System.out.println(gameId);
 		ResponseMessageDto dto = new ResponseMessageDto();
-		System.out.println(gameMap);
 		if (gameMap.containsKey(gameId)) {
 			long deckId = deckIdCounter.getAndIncrement() + 1;
 			gameMap.get(gameId).setDeckId(deckId);
