@@ -7,7 +7,7 @@ mvn clean
 mvn test
 mvn clean install
 Go to the target folder
-java -jar CreditCardValidator-0.0.1-SNAPSHOT.jar
+java -jar DeckOfCards-0.0.1-SNAPSHOT.jar
 
 Verify your RESTful call.
 
