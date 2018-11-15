@@ -424,29 +424,5 @@ public class DeckOfCardsImpl implements DeckOfCards {
 		return dto;
 	}
 
-	public static void main(String args[]) {
-		DeckOfCardsImpl deck = new DeckOfCardsImpl();
-
-		deck.createGame();
-		deck.shuffle(1);
-
-		deck.addPlayer(1);
-		deck.addPlayer(1);
-		deck.addPlayer(1);
-		deck.addPlayer(1);
-		deck.addPlayer(1);
-		deck.addPlayer(1);
-		deck.addPlayer(1);
-		deck.addPlayer(1);
-		deck.addPlayer(1);
-
-		deck.dealCards(1);
-
-		deck.getListofCardsForPlayer(1, 1);
-		// deck.getListofPlayer(1);
-		// deck.getCountOfLeftCards(1);
-		// deck.getCountOfEachCard(1);
-
-	}
 
 }
