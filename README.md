@@ -1,14 +1,12 @@
 # DeckOfCards_REST_API_SpringBoot-Junit-Mockito
 DeckOfCards_REST_API_Application. This project is build in Spring boot 2 + Rest API + Junit and Mockito
 
+Steps :
+
 mvn clean
-
 mvn test
-
 mvn clean install
-
 Go to the target folder
-
 java -jar CreditCardValidator-0.0.1-SNAPSHOT.jar
 
 Verify your RESTful call.
@@ -90,6 +88,7 @@ Response :
 
 
 5 shuffle
+
 http://localhost:8080/deckofCards/shuffle/1
 
 Request : none
@@ -106,6 +105,7 @@ Response :
 }
 
 6) dealCards 
+
 localhost:8080/deckofCards/dealCards/1
 
 Request : none
@@ -122,6 +122,7 @@ Response :
 }
 
 7) getListofCardsForPlayer 
+
 localhost:8080/deckofCards/getListofCardsForPlayer/1/9
 
 Request :
@@ -145,6 +146,7 @@ Response :
 }
 
 8) getListofPlayer
+
 localhost:8080/deckofCards/getListofPlayer/1
 
 Request :
@@ -171,6 +173,7 @@ Response :
 }
 
 9) getCountOfLeftCards
+
 http://localhost:8080/deckofCards/getCountOfLeftCards/1
 
 Request :
@@ -192,6 +195,7 @@ Response :
 }
 
 10) getCountOfEachCard
+
 http://localhost:8080/deckofCards/getCountOfEachCard/1
 
 Request :
