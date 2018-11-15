@@ -43,7 +43,7 @@ public class DeckOfCardsImpl implements DeckOfCards {
 	public ResponseMessageDto createGame() {
 		ResponseMessageDto dto = new ResponseMessageDto();
 		long gameId = gameIdCounter.getAndIncrement() + 1;
-
+		System.out.println(gameId);
 		List<Card> cards = new ArrayList<>();
 		for (Suit s : Suit.values()) {
 			for (Rank r : Rank.values()) {
@@ -83,7 +83,9 @@ public class DeckOfCardsImpl implements DeckOfCards {
 
 	@Override
 	public ResponseMessageDto createDeck(long gameId) {
+		System.out.println(gameId);
 		ResponseMessageDto dto = new ResponseMessageDto();
+		System.out.println(gameMap);
 		if (gameMap.containsKey(gameId)) {
 			long deckId = deckIdCounter.getAndIncrement() + 1;
 			gameMap.get(gameId).setDeckId(deckId);
@@ -136,9 +138,15 @@ public class DeckOfCardsImpl implements DeckOfCards {
 					dto.setResponseCode(HttpStatus.OK.value());
 				} else {
 					dto.setResponseMessage("Player is not available in Game");
+					dto.setResponseCode(HttpStatus.NOT_FOUND.value());
+					dto.setErrorDiscription("Player Id not found ");
+					dto.setError(true);
 				}
 			} else {
 				dto.setResponseMessage("Player is not available in Game");
+				dto.setResponseCode(HttpStatus.NOT_FOUND.value());
+				dto.setErrorDiscription("Player Id not found ");
+				dto.setError(true);
 			}
 
 		} else {
@@ -209,6 +217,7 @@ public class DeckOfCardsImpl implements DeckOfCards {
 				dto.setResponseCode(HttpStatus.OK.value());
 
 			} else {
+				dto.setErrorDiscription("player not found ");
 				dto.setResponseMessage("Players not found or Players are more than 52 count");
 				dto.setResponseCode(HttpStatus.NOT_FOUND.value());
 				dto.setError(true);
@@ -265,6 +274,9 @@ public class DeckOfCardsImpl implements DeckOfCards {
 
 			} else {
 				dto.setResponseMessage("Players are not available in Game");
+				dto.setResponseCode(HttpStatus.NOT_FOUND.value());
+				dto.setErrorDiscription("Game Id not found ");
+				dto.setError(true);
 			}
 		} else {
 			dto.setResponseMessage("Game Id not found for getListofPlayer");
@@ -307,6 +319,9 @@ public class DeckOfCardsImpl implements DeckOfCards {
 
 			} else {
 				dto.setResponseMessage("No cards are left in the Game");
+				dto.setResponseCode(HttpStatus.NOT_FOUND.value());
+				dto.setErrorDiscription("NO cards are availabe in the game ");
+				dto.setError(true);
 			}
 
 		} else {
@@ -357,6 +372,9 @@ public class DeckOfCardsImpl implements DeckOfCards {
 
 			} else {
 				dto.setResponseMessage("No cards are left in the Game");
+				dto.setResponseCode(HttpStatus.NOT_FOUND.value());
+				dto.setErrorDiscription("There is no cards are remaining in the game ");
+				dto.setError(true);
 			}
 
 		} else {
