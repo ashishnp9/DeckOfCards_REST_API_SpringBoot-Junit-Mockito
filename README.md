@@ -13,7 +13,7 @@ Verify your RESTful call.
 
 1) Post call for create game :
 
-localhost:8080/deckofCards/createGame
+http://localhost:8080/deckofCards/createGame
 
 Input : null
 OutPut :
@@ -29,7 +29,7 @@ OutPut :
 
 2) creating Deck
 
-localhost:8080/deckofCards/createDeck
+http://localhost:8080/deckofCards/createDeck
 
 request :
 
@@ -50,7 +50,7 @@ Response :
 
 3) Add Player
 
-localhost:8080/deckofCards/addPlayer
+http://localhost:8080/deckofCards/addPlayer
 
 request :
 
@@ -71,7 +71,7 @@ Response :
 
 4) Remove player 
 
-localhost:8080/deckofCards/removePlayer/3/2
+http://localhost:8080/deckofCards/removePlayer/3/2
 
 request : none
 
@@ -106,7 +106,7 @@ Response :
 
 6) dealCards 
 
-localhost:8080/deckofCards/dealCards/1
+http://localhost:8080/deckofCards/dealCards/1
 
 Request : none
 
@@ -123,7 +123,7 @@ Response :
 
 7) getListofCardsForPlayer 
 
-localhost:8080/deckofCards/getListofCardsForPlayer/1/9
+http://localhost:8080/deckofCards/getListofCardsForPlayer/1/9
 
 Request :
 
@@ -147,7 +147,7 @@ Response :
 
 8) getListofPlayer
 
-localhost:8080/deckofCards/getListofPlayer/1
+http://localhost:8080/deckofCards/getListofPlayer/1
 
 Request :
 
